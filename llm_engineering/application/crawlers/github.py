@@ -1,0 +1,2 @@
+class GithubCrawler:
+    pass
