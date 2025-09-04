@@ -10,6 +10,7 @@ dependencies = [
     "langchain-community>=0.3.29",
     "loguru>=0.7.3",
     "numpy>=2.3.2",
+    "pymongo>=4.14.1",
     "selenium>=4.32.0",
     "tqdm>=4.67.1",
     "typing-extensions>=4.15.0",
