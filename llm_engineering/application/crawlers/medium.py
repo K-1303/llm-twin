@@ -3,7 +3,7 @@ from loguru import logger
 from llm_engineering.domain.documents import ArticleDocument
 from .base import BaseSeleniumCrawler
 
-class MediumCrawler:
+class MediumCrawler(BaseSeleniumCrawler):
     model = ArticleDocument
 
     def set_extra_driver_options(self, options) -> None:

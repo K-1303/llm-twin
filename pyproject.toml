@@ -7,12 +7,32 @@ requires-python = ">=3.11"
 dependencies = [
     "bs4>=0.0.2",
     "chromedriver-autoinstaller>=0.6.4",
+    "html2text>=2025.4.15",
     "langchain-community>=0.3.29",
     "loguru>=0.7.3",
     "numpy>=2.3.2",
+    "poethepoet>=0.37.0",
     "pymongo>=4.14.1",
     "selenium>=4.32.0",
     "tqdm>=4.67.1",
     "typing-extensions>=4.15.0",
-    "zenml>=0.84.3",
+    "zenml[server]>=0.84.3",
 ]
+
+[tool.poe.tasks]
+# Data pipelines
+run-digital-data-etl-alex = "echo 'It is not supported anymore.'"
+run-digital-data-etl-maxime = "python -m tools.run --run-etl --no-cache --etl-config-filename digital_data_etl_maxime_labonne.yaml"
+run-digital-data-etl-paul = "python -m tools.run --run-etl --no-cache --etl-config-filename digital_data_etl_paul_iusztin.yaml"
+
+# You can group scripts by making one script call others
+run-digital-data-etl = [
+    "run-digital-data-etl-maxime",
+    "run-digital-data-etl-paul",
+]
+
+run-feature-engineering-pipeline = "python -m tools.run --no-cache --run-feature-engineering"
+run-generate-instruct-datasets-pipeline = "python -m tools.run --no-cache --run-generate-instruct-datasets"
+run-generate-preference-datasets-pipeline = "python -m tools.run --no-cache --run-generate-preference-datasets"
+run-end-to-end-data-pipeline = "python -m tools.run --no-cache --run-end-to-end-data"
+

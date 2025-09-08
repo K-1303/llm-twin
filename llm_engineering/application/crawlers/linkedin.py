@@ -13,7 +13,7 @@ from llm_engineering.settings import settings
 from .base import BaseSeleniumCrawler
 
 
-class LinkedInCrawler(BaseSeleniumCrawler):
+class LinkedinCrawler(BaseSeleniumCrawler):
     model = PostDocument
 
     def __init__(self, scroll_limit: int = 5, is_deprecated: bool = True) -> None:
