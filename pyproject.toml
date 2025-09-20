@@ -13,8 +13,11 @@ dependencies = [
     "numpy>=2.3.2",
     "poethepoet>=0.37.0",
     "pymongo>=4.14.1",
+    "qdrant-client>=1.15.1",
     "selenium>=4.32.0",
+    "sentence-transformers>=5.1.0",
     "tqdm>=4.67.1",
+    "transformers>=4.56.2",
     "typing-extensions>=4.15.0",
     "zenml[server]>=0.84.3",
 ]
@@ -24,15 +27,10 @@ dependencies = [
 run-digital-data-etl-alex = "echo 'It is not supported anymore.'"
 run-digital-data-etl-maxime = "python -m tools.run --run-etl --no-cache --etl-config-filename digital_data_etl_maxime_labonne.yaml"
 run-digital-data-etl-paul = "python -m tools.run --run-etl --no-cache --etl-config-filename digital_data_etl_paul_iusztin.yaml"
-
-# You can group scripts by making one script call others
 run-digital-data-etl = [
     "run-digital-data-etl-maxime",
     "run-digital-data-etl-paul",
 ]
 
 run-feature-engineering-pipeline = "python -m tools.run --no-cache --run-feature-engineering"
-run-generate-instruct-datasets-pipeline = "python -m tools.run --no-cache --run-generate-instruct-datasets"
-run-generate-preference-datasets-pipeline = "python -m tools.run --no-cache --run-generate-preference-datasets"
-run-end-to-end-data-pipeline = "python -m tools.run --no-cache --run-end-to-end-data"
 
