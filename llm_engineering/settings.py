@@ -27,6 +27,10 @@ class Settings(BaseSettings):
     QDRANT_CLOUD_URL: str = "str"
     QDRANT_APIKEY: str | None = None
 
+    HF_TOKEN: str | None = None
+
+    COMET_API_KEY: str | None = None
+
     @classmethod
     def load_settings(cls) -> "Settings":
         """
