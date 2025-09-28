@@ -4,9 +4,38 @@ import re
 from concurrent.futures import ThreadPoolExecutor
 from typing import List, Tuple
 from datasets import Dataset
-from openai import OpenAI
 import google.generativeai as genai
 from tqdm.auto import tqdm
+from llm_engineering.settings import settings
+from huggingface_hub import HfApi
+
+import time
+from threading import Lock
+import queue
+
+class RateLimiter:
+    def __init__(self, max_requests_per_minute: int = 15):
+        self.max_requests = max_requests_per_minute
+        self.requests = queue.Queue()
+        self.lock = Lock()
+    
+    def acquire(self):
+        with self.lock:
+            now = time.time()
+           
+            while not self.requests.empty():
+                if now - self.requests.queue[0] > 60:
+                    self.requests.get()
+                else:
+                    break
+            
+            if self.requests.qsize() >= self.max_requests:
+                sleep_time = 60 - (now - self.requests.queue[0]) + 1
+                time.sleep(sleep_time)
+            
+            self.requests.put(time.time())
+
+rate_limiter = RateLimiter(15)
 
 
 def load_articles_from_json(file_path: str) -> Dataset:
@@ -16,23 +45,18 @@ def load_articles_from_json(file_path: str) -> Dataset:
     if isinstance(data, list):
         articles = data
     elif isinstance(data, dict) and "artifact_data" in data:
-        # Fallback for other JSON structures
         articles = data["artifact_data"]
     else:
         raise ValueError("Unsupported JSON structure. Expected a list or dict with 'artifact_data' key.")
     
     if articles and isinstance(articles[0], dict) and "payload" in articles[0]:
-        # Extract data from payload
         sample_keys = articles[0]["payload"].keys()
         print(f"Available keys in JSON payload: {list(sample_keys)}")
         
-        # Create dataset with available keys, using defaults for missing ones
         dataset_dict = {}
         
-        # Use the document ID from the top level
         dataset_dict["id"] = [item.get("id", f"item_{i}") for i, item in enumerate(articles)]
         
-        # Extract content from payload
         dataset_dict["content"] = [item["payload"].get("content", "") for item in articles]
         dataset_dict["platform"] = [item["payload"].get("platform", "unknown") for item in articles]
         dataset_dict["author_id"] = [item["payload"].get("author_id", "unknown") for item in articles]
@@ -95,6 +119,8 @@ class InstructionAnswerSet:
 
 
 def generate_instruction_answer_pairs(extract: str, model: genai.GenerativeModel) -> List[Tuple[str, str]]:
+    rate_limiter.acquire()
+
     prompt = f"""Based on the following extract, generate five
     instruction-answer pairs. Each instruction \
     must ask to write about a specific topic contained in the context.
@@ -149,7 +175,7 @@ def generate_instruction_answer_pairs(extract: str, model: genai.GenerativeModel
         print(f"Error generating instruction-answer pairs: {e}")
         return []
 
-def create_instruction_dataset(dataset: Dataset, client: genai.GenerativeModel, num_workers: int = 4) -> Dataset:
+def create_instruction_dataset(dataset: Dataset, client: genai.GenerativeModel, num_workers: int = 2) -> Dataset:
     extracts = extract_substrings(dataset)
     instruction_answer_pairs = []
 
@@ -165,12 +191,25 @@ def create_instruction_dataset(dataset: Dataset, client: genai.GenerativeModel, 
         {"instruction": list(instructions), "output": list(answers)}
     )
 
+
+def check_repo_exists(hf_api, repo_id):
+    """Helper function to check if repository exists"""
+    try:
+        hf_api.repo_info(repo_id=repo_id, repo_type="dataset")
+        return True
+    except Exception:
+        return False
+
 def main(dataset_id: str, api_key: str = None) -> Dataset:
     if api_key:
         genai.configure(api_key=api_key)
     else:
         # You can set the API key as an environment variable: GOOGLE_API_KEY
         genai.configure()
+
+    hf_api = HfApi(token=settings.HF_TOKEN)
+    repo_id = f"{settings.HF_USERNAME}/llmtwin"
+
 
     # Initialize Gemini model
     model = genai.GenerativeModel('gemini-2.0-flash')  # or 'gemini-1.5-pro' for better quality
@@ -187,12 +226,28 @@ def main(dataset_id: str, api_key: str = None) -> Dataset:
 
     # 3. Train/test split and export
     filtered_dataset = instruction_dataset.train_test_split(test_size=0.1)
-    #filtered_dataset.push_to_hub("mlabonne/llmtwin")
 
-    filtered_dataset["train"].to_json("instruction_test_dataset.json")
-    filtered_dataset["test"].to_json("instruction_test_dataset.json")
+    repo_exists = check_repo_exists(hf_api, repo_id)
+    
+    if repo_exists:
+        print(f"Repository {repo_id} already exists")
+    else:
+        print(f"Creating new repository {repo_id}")
+        hf_api.create_repo(
+            repo_id=repo_id,
+            repo_type="dataset",
+            private=False,
+            exist_ok=True
+        )
+
+    filtered_dataset.push_to_hub(
+        repo_id,
+        token=settings.HF_TOKEN,
+        private=False,
+        commit_message="Updated instruction dataset with train/test split"
+    )
 
     return filtered_dataset
 
 if __name__ == "__main__":
-    main("llmtwin", "AIzaSyBwC1yQbdu4gL9p1Q8SrVuQ2BEeEt07XX0")
+    main("llmtwin", settings.GOOGLE_API_KEY)

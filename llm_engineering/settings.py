@@ -28,7 +28,8 @@ class Settings(BaseSettings):
     QDRANT_APIKEY: str | None = None
 
     HF_TOKEN: str | None = None
-
+    HF_USERNAME: str | None = None
+    GOOGLE_API_KEY: str | None = None
     COMET_API_KEY: str | None = None
 
     @classmethod
