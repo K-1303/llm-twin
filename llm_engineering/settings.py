@@ -31,6 +31,7 @@ class Settings(BaseSettings):
     HF_USERNAME: str | None = None
     GOOGLE_API_KEY: str | None = None
     COMET_API_KEY: str | None = None
+    SCRAPINGDOG_API_KEY: str | None = None
 
     @classmethod
     def load_settings(cls) -> "Settings":

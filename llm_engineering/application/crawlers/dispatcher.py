@@ -8,6 +8,7 @@ from .custom_article import CustomArticleCrawler
 from .github import GithubCrawler
 from .linkedin import LinkedinCrawler
 from .medium import MediumCrawler
+from .twitter import TwitterCrawler
 
 class CrawlerDispatcher:
     def __init__(self) -> None:
@@ -31,6 +32,12 @@ class CrawlerDispatcher:
     
     def register_github(self) -> "CrawlerDispatcher":
         self.register("https://github.com", GithubCrawler)
+
+        return self
+    
+    def register_twitter(self) -> "CrawlerDispatcher":
+
+        self.register("https://x.com", TwitterCrawler)
 
         return self
     

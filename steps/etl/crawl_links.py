@@ -10,7 +10,7 @@ from llm_engineering.domain.documents import UserDocument
 @step
 def crawl_links(user: UserDocument, links: list[str]) -> Annotated[list[str], "crawled_links"]:
     # Add Linkedin
-    dispatcher = CrawlerDispatcher.build().register_medium().register_github()
+    dispatcher = CrawlerDispatcher.build().register_medium().register_github().register_twitter()
 
     logger.info(f"Starting to crawl {len(links)} links for user {user.full_name}")
 
