@@ -37,13 +37,14 @@ class TwitterCrawler:
                     else:
                         user_id = user.id
 
+
                     post = PostDocument(
                         platform="twitter",
                         content=tweet_data,
                         link=link,
                         author_id=user_id,  
-                        author_full_name=user.full_name
-                    )
+                        author_full_name=user.full_name,
+                        image=tweet_data.get("image") if tweet_data.get("image") else None)
                     
                     existing_post = self.model.find(link=link)
                     
@@ -87,7 +88,7 @@ class TwitterCrawler:
 
             
             if response.status_code != 200:
-                logger.error(f"ScrapingDog API error. Status: {response.status_code}, Response: {response.text}")
+                logger.error(f"ScrapingDog API error {response.status_code}: {response.text}")
                 return None
             
             data = response.json()
@@ -133,47 +134,36 @@ class TwitterCrawler:
             core = tweet_result.get("core", {})
             
             tweet_data["text"] = legacy.get("full_text", "")
-            tweet_data["created_at"] = legacy.get("created_at", "")
-            tweet_data["id"] = legacy.get("id_str", "")
             
-            user_results = core.get("user_results", {}).get("result", {})
-            if user_results:
-                user_core = user_results.get("core", {})
-                tweet_data["author"] = {
-                    "name": user_core.get("name", ""),
-                    "username": user_core.get("screen_name", "")
-                }
+            tweet_data["id"] = legacy.get("id_str", "")
 
             extended_entities = legacy.get("extended_entities", {})
-            if extended_entities and "media" in extended_entities:
-                media = extended_entities["media"][0]
-                
-                if media["type"] == "video":
-                    video_info = media.get("video_info", {})
-                    video_variants = video_info.get("variants", [])
-                    video_url = ""
-                    max_bitrate = 0
-                    for variant in video_variants:
-                        if variant.get("content_type") == "video/mp4":
-                            bitrate = variant.get("bitrate", 0)
-                            if bitrate > max_bitrate:
-                                max_bitrate = bitrate
-                                video_url = variant["url"]
-                    
-                    if video_url:
-                        tweet_data["media"] = {
-                            "type": "video",
-                            "url": video_url,
-                            "thumbnail": media.get("media_url_https", ""),
-                            "duration_ms": video_info.get("duration_millis")
-                        }
-                elif media["type"] == "photo":
-                    tweet_data["media"] = {
-                        "type": "photo",
-                        "url": media.get("media_url_https", "")
-                    }
 
-            logger.debug(f"Parsed tweet data: {tweet_data['text'][:100]}...")
+            media = extended_entities["media"][0]
+
+            if media["type"] == "photo":
+                tweet_data["image"] = media.get("media_url_https", "")
+                
+            # if extended_entities and "media" in extended_entities:
+            #     media = extended_entities["media"][0]
+                
+            #     if media["type"] == "video":
+            #         video_info = media.get("video_info", {})
+            #         video_variants = video_info.get("variants", [])
+            #         video_url = ""
+            #         max_bitrate = 0
+            #         for variant in video_variants:
+            #             if variant.get("content_type") == "video/mp4":
+            #                 bitrate = variant.get("bitrate", 0)
+            #                 if bitrate > max_bitrate:
+            #                     max_bitrate = bitrate
+            #                     video_url = variant[0]["url"]
+                    
+            #         if video_url:
+            #             tweet_data["video"] = video_url,
+            #     elif media["type"] == "photo":
+            #         tweet_data["image"] = media.get("media_url_https", "")
+
             return tweet_data
                 
         except Exception as e:
