@@ -5,15 +5,18 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "boto3>=1.40.54",
     "bs4>=0.0.2",
     "chromedriver-autoinstaller>=0.6.4",
     "datasets>=4.1.1",
     "google-generativeai>=0.8.5",
     "html2text>=2025.4.15",
     "langchain-community>=0.3.29",
+    "langchain-google-genai>=2.0.10",
     "loguru>=0.7.3",
     "numpy>=2.3.2",
     "openai>=1.109.1",
+    "opik>=1.8.77",
     "poethepoet>=0.37.0",
     "pymongo>=4.14.1",
     "qdrant-client>=1.15.1",
@@ -23,6 +26,7 @@ dependencies = [
     "transformers>=4.56.2",
     "typing-extensions>=4.15.0",
     "unsloth>=2025.7.2",
+    "uvicorn>=0.35.0",
     "zenml[server]>=0.84.3",
 ]
 

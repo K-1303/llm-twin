@@ -212,7 +212,7 @@ def main(dataset_id: str, api_key: str = None) -> Dataset:
 
 
     # Initialize Gemini model
-    model = genai.GenerativeModel('gemini-2.0-flash')  # or 'gemini-1.5-pro' for better quality
+    model = genai.GenerativeModel(settings.GOOGLE_GEMINI_MODEL)  # or 'gemini-1.5-pro' for better quality
 
     # 1. Load the raw data
     raw_dataset = load_articles_from_json("cleaned_documents.json")
