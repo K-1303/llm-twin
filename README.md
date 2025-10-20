@@ -20,17 +20,7 @@
 2. **Processing** and cleaning the data through feature engineering pipelines
 3. **Embedding** content into vector representations for semantic search
 4. **Retrieving** relevant context using advanced RAG techniques
-5. **Generating** personalized content using fine-tuned LLMs
-
-### Key Features
-
-- 🕷️ **Multi-Platform Crawlers**: Extract content from Medium, LinkedIn, GitHub, and Twitter/X
-- 🔄 **MLOps Pipelines**: Automated data processing with ZenML orchestration
-- 🧠 **Advanced RAG**: Query expansion, self-querying, and reranking
-- 📊 **Vector Storage**: Qdrant for efficient similarity search
-- 🗄️ **NoSQL Database**: MongoDB for document storage
-- 🤖 **LLM Integration**: Google Gemini API for inference
-- 📈 **Observability**: Opik/Comet ML for prompt monitoring
+5. **Generating** personalized content using fine-tuned LLMs/Gemini
 
 ---
 
@@ -412,3 +402,4 @@ curl -X POST "http://localhost:8000/rag" \
   "answer": "Vector databases are specialized systems designed for..."
 }
 ```
+
