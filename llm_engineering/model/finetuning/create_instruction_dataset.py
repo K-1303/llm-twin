@@ -35,7 +35,7 @@ class RateLimiter:
             
             self.requests.put(time.time())
 
-rate_limiter = RateLimiter(15)
+rate_limiter = RateLimiter(10)
 
 
 def load_articles_from_json(file_path: str) -> Dataset:
@@ -73,7 +73,7 @@ def clean_text(text):
     return text.strip()
 
 
-def extract_substrings(dataset: Dataset, min_length: int = 1000, max_length: int = 2000) -> List[str]:
+def extract_substrings(dataset: Dataset, min_length: int = 10, max_length: int = 100) -> List[str]:
     extracts = []
     sentence_pattern = r"(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?|\!)\s"
 
@@ -208,7 +208,7 @@ def main(dataset_id: str, api_key: str = None) -> Dataset:
         genai.configure()
 
     hf_api = HfApi(token=settings.HF_TOKEN)
-    repo_id = f"{settings.HF_USERNAME}/llmtwin"
+    repo_id = f"{settings.HF_USERNAME}/llmtwin-instruction"
 
 
     # Initialize Gemini model

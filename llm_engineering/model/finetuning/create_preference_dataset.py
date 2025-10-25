@@ -34,7 +34,7 @@ class RateLimiter:
             
             self.requests.put(time.time())
 
-rate_limiter = RateLimiter(15)
+rate_limiter = RateLimiter(10)
 
 class PreferenceSet:
     def __init__(self, triples: List[Tuple[str, str, str]]):
@@ -85,7 +85,7 @@ def clean_text(text: str) -> str:
     text = re.sub(r"\s+", " ", text)
     return text.strip()
 
-def extract_substrings(dataset: Dataset, min_length: int = 1000, max_length: int = 2000) -> List[str]:
+def extract_substrings(dataset: Dataset, min_length: int = 10, max_length: int = 200) -> List[str]:
     extracts = []
     sentence_pattern = r"(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?|\!)\s"
 
@@ -182,7 +182,7 @@ Extract:
         print(f"Error generating preference triples: {str(e)}")
         return []
 
-def filter_short_answers(dataset: Dataset, min_length: int = 100) -> Dataset:
+def filter_short_answers(dataset: Dataset, min_length: int = 10) -> Dataset:
     def is_long_enough(example):
         return len(example['chosen']) >= min_length
     return dataset.filter(is_long_enough)
@@ -248,7 +248,7 @@ def main(dataset_id: str, api_key: str = None) -> Dataset:
     dataset = filter_answer_format(dataset)
 
     # 5. Export
-    dataset.push_to_hub(dataset_id)
+    dataset.push_to_hub(dataset_id, token = settings.HF_TOKEN, private=False)
     return dataset
 
 if __name__ == "__main__":

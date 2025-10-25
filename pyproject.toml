@@ -27,7 +27,7 @@ dependencies = [
     "typing-extensions>=4.15.0",
     "unsloth>=2025.7.2",
     "uvicorn>=0.35.0",
-    "zenml[server]>=0.84.3",
+    "zenml[local,server]==0.90.0",
 ]
 
 [tool.poe.tasks]
@@ -41,4 +41,6 @@ run-digital-data-etl = [
 ]
 
 run-feature-engineering-pipeline = "python -m tools.run --no-cache --run-feature-engineering"
+
+run-end-to-end-data-pipeline = "python -m tools.run --no-cache --run-end-to-end-data"
 

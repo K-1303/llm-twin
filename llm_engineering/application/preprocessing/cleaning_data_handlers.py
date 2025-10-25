@@ -40,6 +40,7 @@ class PostCleaningHandler(CleaningDataHandler):
             author_id=data_model.author_id,
             author_full_name=data_model.author_full_name,
             image=data_model.image if data_model.image else None,
+            link = data_model.link
         )
 
 

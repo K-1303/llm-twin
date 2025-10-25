@@ -1,0 +1,48 @@
+settings:
+  docker:
+    parent_image: 992382797823.dkr.ecr.eu-central-1.amazonaws.com/zenml-rlwlcs:latest
+    skip_build: True
+  orchestrator.sagemaker:
+    synchronous: false
+
+parameters:
+  # Data ETL & Feature engineering pipelines parameters
+  author_links:
+    - user_full_name: Andrej Karpathy # [First Name(s)] [Last Name]
+      links:
+        # X
+        - https://x.com/karpathy/status/1756380066580455557
+        - https://x.com/karpathy/status/1759996549109776702
+        - https://x.com/karpathy/status/1760388761349927356
+        - https://x.com/karpathy/status/1733299213503787018
+        - https://x.com/karpathy/status/1013244313327681536
+        - https://x.com/karpathy/status/1206064174129930240
+        - https://x.com/karpathy/status/1236737502200791041
+        - https://x.com/karpathy/status/1279130562913951744
+        - https://x.com/karpathy/status/1654892810590650376
+        - https://x.com/karpathy/status/1644183721405464576
+        - https://x.com/karpathy/status/1641535092123369472
+        - https://x.com/karpathy/status/1638996540214902784
+        - https://x.com/karpathy/status/1624847051426234368
+        - https://x.com/karpathy/status/1619500957196484609
+        - https://x.com/karpathy/status/1615398117683388417
+        - https://x.com/karpathy/status/1611407286924099585
+        - https://x.com/karpathy/status/1609631031874969600
+        - https://x.com/karpathy/status/1599488637422694400
+        - https://x.com/karpathy/status/1593417974433517569
+        - https://x.com/karpathy/status/1599852921541128194
+        - https://x.com/karpathy/status/1593417987687473152
+        - https://x.com/karpathy/status/1582807367988654081
+        - https://x.com/karpathy/status/1558863432023126020
+        - https://x.com/karpathy/status/1558569874447671296
+        - https://x.com/karpathy/status/1550903910633680897
+        - https://x.com/karpathy/status/1550903910633680897
+        
+    - user_full_name: Kavya Dua # [First Name(s)] [Last Name]
+      links:
+        # Twitter
+        - https://x.com/kavya_dua_/status/1939346130472693992
+        - https://x.com/kavya_dua_/status/1934906092179607995
+        - https://x.com/kavya_dua_/status/1944661780606988521
+        - https://x.com/kavya_dua_/status/1965094873666863455
+        - https://x.com/kavya_dua_/status/1967485152088691028

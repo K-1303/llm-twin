@@ -139,10 +139,11 @@ class TwitterCrawler:
 
             extended_entities = legacy.get("extended_entities", {})
 
-            media = extended_entities["media"][0]
+            if(extended_entities and "media" in extended_entities):
+                media = extended_entities["media"][0]
 
-            if media["type"] == "photo":
-                tweet_data["image"] = media.get("media_url_https", "")
+                if media["type"] == "photo":
+                    tweet_data["image"] = media.get("media_url_https", "")
                 
             # if extended_entities and "media" in extended_entities:
             #     media = extended_entities["media"][0]

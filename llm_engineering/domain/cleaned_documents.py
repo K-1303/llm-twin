@@ -16,6 +16,7 @@ class CleanedDocument(VectorBaseDocument, ABC):
 
 class CleanedPostDocument(CleanedDocument):
     image: Optional[str] = None
+    link: str | None = None
 
     class Config:
         name = "cleaned_posts"
